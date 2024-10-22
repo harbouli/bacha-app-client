@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 
 import { DataTableColumnHeader } from '@/components/data-table';
-import { EyeIcon } from 'lucide-react';
+import { EyeIcon, Trash2Icon } from 'lucide-react';
 import { PersonType } from '@/services/person';
+import PersonModal from '../dialog/view-persone-dialog';
+import { DeletePersonsDialog } from '../dialog/delete-person-dialog';
 
 export function getColumns(): ColumnDef<PersonType>[] {
   return [
@@ -105,37 +107,43 @@ export function getColumns(): ColumnDef<PersonType>[] {
       id: 'actions',
       cell: function Cell({ row }) {
         const [showPerson, setShowPerson] = React.useState(false);
-        const [showEdite, setShowEdit] = React.useState(false);
+        const [showDelete, setShowDelete] = React.useState(false);
 
         return (
           <>
-            {/* <ChangeRoleDialog
-              open={showAddNewAgencyDialog}
-              onOpenChange={setShowAddNewAgencyDialog}
-              userId={row.original._id}
+            <PersonModal
+              open={showPerson}
+              onOpenChange={setShowPerson}
+              person={row.original}
               showTrigger={false}
             />
-            <ChangeRoleAgentDialog
-              open={showAddNewAgentDialog}
-              onOpenChange={setShowAddNewAgentDialog}
-              userId={row.original._id}
+            <DeletePersonsDialog
+              open={showDelete}
+              onOpenChange={setShowDelete}
+              persons={[row.original]}
               showTrigger={false}
-            /> */}
-            {/* <DeleteContactsDialog
-              open={showDeleteTaskDialog}
-              onOpenChange={setShowDeleteTaskDialog}
-              contacts={[row.original]}
-              showTrigger={false}
-              onSuccess={() => row.toggleSelected(false)}
-            /> */}
-
-            <Button
-              aria-label="Open menu"
-              variant="ghost"
-              className="data-[state=open]:bg-muted flex size-8 p-0"
-            >
-              <EyeIcon className="size-4" aria-hidden="true" />
-            </Button>
+            />
+            <div className="flex gap-4 flex-row">
+              <Button
+                aria-label="Open menu"
+                variant="ghost"
+                className="data-[state=open]:bg-muted flex size-8 p-0"
+                onClick={() => setShowPerson(true)}
+              >
+                <EyeIcon className="size-4" aria-hidden="true" />
+              </Button>
+              <Button
+                aria-label="Open menu"
+                variant="ghost"
+                className="data-[state=open]:bg-muted flex size-8 p-0"
+                onClick={() => setShowDelete(true)}
+              >
+                <Trash2Icon
+                  className="size-4 text-destructive"
+                  aria-hidden="true"
+                />
+              </Button>
+            </div>
           </>
         );
       },

@@ -38,3 +38,7 @@ export const createPerson = async (
     },
   });
 };
+
+export const deleteMany = async (ids: number[]) => {
+  await client.delete('person/delete-many', { data: { ids } });
+};
