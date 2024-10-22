@@ -22,6 +22,8 @@ import {
   FileUploaderContent,
   FileUploaderItem,
 } from '@/components/ui/file-upload';
+import { queryKey, useCreatePerson } from '@/services/person';
+import { useQueryClient } from '@tanstack/react-query';
 
 const formSchema = z.object({
   CNIMan: z.string().regex(/^[a-zA-Z]{1,2}\d{5,7}$/, {
@@ -32,13 +34,16 @@ const formSchema = z.object({
     message:
       'Le CNI doit commencer par une ou deux lettres suivies de 5 à 7 chiffres.',
   }),
-  firstname: z.string(),
-  lastname: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
   docs: z.array(z.string()).optional(),
 });
 
-export default function CreatePerson() {
+export default function CreatePerson({ onSuccess }: { onSuccess: () => void }) {
   const [files, setFiles] = useState<File[] | null>([]);
+  const { mutate } = useCreatePerson();
+
+  const queryClient = useQueryClient();
 
   const dropZoneConfig = {
     maxFiles: 5,
@@ -51,11 +56,15 @@ export default function CreatePerson() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
+      mutate(
+        { ...values, docs: files },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: queryKey.getPeople });
+            toast.success('Formulaire soumis avec succès !');
+            onSuccess();
+          },
+        }
       );
     } catch (error) {
       console.error('Form submission error', error);
@@ -121,7 +130,7 @@ export default function CreatePerson() {
           <div className="col-span-6">
             <FormField
               control={form.control}
-              name="firstname"
+              name="firstName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Prénom</FormLabel>
@@ -144,7 +153,7 @@ export default function CreatePerson() {
           <div className="col-span-6">
             <FormField
               control={form.control}
-              name="lastname"
+              name="lastName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nom de famille</FormLabel>

@@ -1,34 +1,14 @@
-// import type { AxiosError } from 'axios';
-// import { createMutation } from 'react-query-kit';
+import type { AxiosError } from 'axios';
+import { createMutation } from 'react-query-kit';
 
-// import { client } from '../common';
-// import { FormSchemaType, ResponseType, RestFormData } from './schema';
-// import { catchError } from '@/common';
-// import { resetPassword } from './api';
-// import { toast } from 'sonner';
+import { PersonType } from './schema';
+import { createPerson } from './api';
+import { catchError } from '@/common';
 
-// type Variables = FormSchemaType;
-// type Response = ResponseType;
+type Variables = Omit<PersonType, 'docs'> & { docs: File[] | null };
+type Response = void;
 
-// export const useLogin = createMutation<Response, Variables, AxiosError>({
-//   mutationFn: async (variables) =>
-//     client({
-//       url: 'auth/sign-in',
-//       method: 'POST',
-//       data: variables,
-//     }).then((response) => response.data),
-//   onError: (err) => catchError(err),
-// });
-
-// export const useRestPassword = createMutation<
-//   { message: string },
-//   RestFormData,
-//   AxiosError
-// >({
-//   mutationFn: async (variables) =>
-//     resetPassword(variables.email, variables.newPassword),
-//   onError: (err) => catchError(err),
-//   onSuccess: (data) => {
-//     toast.success(data.message);
-//   },
-// });
+export const useCreatePerson = createMutation<Response, Variables, AxiosError>({
+  mutationFn: async (variables) => createPerson(variables),
+  onError: (err) => catchError(err),
+});

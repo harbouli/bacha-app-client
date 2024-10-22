@@ -25,7 +25,11 @@ export function PeopleTableToolbarActions({
       ) : null}
       {/* <CreateContactSheet /> */}
 
-      <CreatePersonSheet open={createUser} onOpenChange={setCreateUser} />
+      <CreatePersonSheet
+        open={createUser}
+        onSuccess={() => setCreateUser(false)}
+        onOpenChange={setCreateUser}
+      />
       {/**
        * Other actions can be added here.
        * For example, import, view, etc.

@@ -14,7 +14,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 interface CreatePersonSheetProps
   extends React.ComponentPropsWithoutRef<typeof Sheet> {
   showTrigger?: boolean;
-  onSuccess?: () => void;
+  onSuccess: () => void;
 }
 
 export function CreatePersonSheet({
@@ -41,7 +41,7 @@ export function CreatePersonSheet({
               remplis.
             </SheetDescription>
           </SheetHeader>
-          <CreatePerson />
+          <CreatePerson onSuccess={onSuccess} />
         </ScrollArea>
       </SheetContent>
     </Sheet>
